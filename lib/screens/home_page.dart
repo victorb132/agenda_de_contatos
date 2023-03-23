@@ -200,10 +200,9 @@ class _HomePageState extends State<HomePage> {
     final recContact = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ContactPage(
-          contact: contact,
-        ),
-      ),
+          builder: (context) => ContactPage(
+                contact: contact,
+              )),
     );
 
     if (recContact != null) {
