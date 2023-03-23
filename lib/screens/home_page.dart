@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../helpers/contact_helper.dart';
 
+enum OrderOptions { orderaz, orderza }
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -32,6 +34,21 @@ class _HomePageState extends State<HomePage> {
         title: const Text("Contatos"),
         backgroundColor: Colors.red,
         centerTitle: true,
+        actions: [
+          PopupMenuButton<OrderOptions>(
+            itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
+              const PopupMenuItem<OrderOptions>(
+                value: OrderOptions.orderaz,
+                child: Text("Ordenar de A-Z"),
+              ),
+              const PopupMenuItem<OrderOptions>(
+                value: OrderOptions.orderza,
+                child: Text("Ordenar de Z-A"),
+              ),
+            ],
+            onSelected: _orderList,
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
@@ -64,11 +81,11 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: contacts[index].img != null
-                          ? FileImage(File(contacts[index].img!))
-                          : const AssetImage("images/person.png")
-                              as ImageProvider<Object>,
-                    ),
+                        image: contacts[index].img != null
+                            ? FileImage(File(contacts[index].img!))
+                            : const AssetImage("images/person.png")
+                                as ImageProvider<Object>,
+                        fit: BoxFit.cover),
                   ),
                 ),
                 Padding(
@@ -129,7 +146,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onPressed: () {
-                        launch("tel:${contacts[index].phone}");
+                        launch("tel: ${contacts[index].phone}");
+                        Navigator.pop(context);
                       },
                     ),
                   ),
@@ -204,5 +222,21 @@ class _HomePageState extends State<HomePage> {
         contacts = list;
       });
     });
+  }
+
+  void _orderList(OrderOptions result) {
+    switch (result) {
+      case OrderOptions.orderaz:
+        contacts.sort((a, b) {
+          return a.name!.toLowerCase().compareTo(b.name!.toLowerCase());
+        });
+        break;
+      case OrderOptions.orderza:
+        contacts.sort((a, b) {
+          return b.name!.toLowerCase().compareTo(a.name!.toLowerCase());
+        });
+        break;
+    }
+    setState(() {});
   }
 }

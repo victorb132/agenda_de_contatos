@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../helpers/contact_helper.dart';
 
@@ -72,13 +73,25 @@ class _ContactPageState extends State<ContactPage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: _editedContact!.img != null
-                          ? FileImage(File(_editedContact!.img!))
-                          : const AssetImage("images/person.png")
-                              as ImageProvider<Object>,
-                    ),
+                        image: _editedContact!.img != null
+                            ? FileImage(File(_editedContact!.img!))
+                            : const AssetImage("images/person.png")
+                                as ImageProvider<Object>,
+                        fit: BoxFit.cover),
                   ),
                 ),
+                onTap: () {
+                  ImagePicker()
+                      .pickImage(source: ImageSource.gallery)
+                      .then((file) {
+                    if (file == null) {
+                      return;
+                    }
+                    setState(() {
+                      _editedContact!.img = file.path;
+                    });
+                  });
+                },
               ),
               TextField(
                 controller: _nameController,
